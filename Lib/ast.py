@@ -165,29 +165,27 @@ def dump(node, annotate_fields=True, include_attributes=False, *, indent=None):
 
 def dump_json(node):
     """
-    Return a string in json representation of the tree in node. This is mainly
-    useful for debugging purposes or perhaps serializing the tree.
+    Return a json representation of the tree in node. This is mainly useful for
+    debugging purposes or perhaps serializing the tree.
     """
-    def recurse_node_to_dict(obj): pass
-
     def node_to_dict(cls):
+        def recurse_node_to_dict(obj):
+            if isinstance(obj, list):
+                return list(map(node_to_dict, obj))
+            elif hasattr(obj, '__dict__'):
+                if obj.__dict__:
+                    return node_to_dict(obj)
+	        else:
+                    return obj.__class__.__name__
+            elif obj.__class__.__name__ == 'ellipsis':
+                return 'Ellipsis'
+            else:
+                return obj
+
         return {cls.__class__.__name__: dict(
-            (key, recurse_node_to_dict(value))
+	    (key, recurse_node_to_dict(value))
             for (key, value) in cls.__dict__.items()
         )}
-
-    def recurse_node_to_dict(obj):
-        if isinstance(obj, list):
-            return list(map(node_to_dict, obj))
-        elif hasattr(obj, '__dict__'):
-            if len(obj.__dict__.items()):
-                return node_to_dict(obj)
-            else:
-                return obj.__class__.__name__
-        elif obj.__class__.__name__ == 'ellipsis':
-            return 'Ellipsis'
-        else:
-            return obj
 
     return str(node_to_dict(node))
 
