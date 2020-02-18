@@ -184,7 +184,7 @@ def dump_json(node):
                 return node_to_dict(obj)
             else:
                 return obj.__class__.__name__
-        elif type(obj).__name__ == 'ellipsis':
+        elif obj.__class__.__name__ == 'ellipsis':
             return 'Ellipsis'
         else:
             return obj
