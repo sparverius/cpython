@@ -180,7 +180,7 @@ def dump_json(node):
             return node_dict(leaf) if leaf.__dict__ else leaf.__class__.__name__
         elif isinstance(leaf, list):
             return list(map(node_dict, leaf))
-	elif leaf.__class__.__name__ == 'ellipsis': # `_ is Ellipsis` is shadowed
+        elif leaf.__class__.__name__ == 'ellipsis': # `_ is Ellipsis` is shadowed
             return 'Ellipsis'
         elif leaf is None:
             return 'None'
